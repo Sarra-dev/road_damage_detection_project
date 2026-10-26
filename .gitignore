@@ -1,5 +1,4 @@
 .venv/
-data/
 runs/
 mlruns/
 *.pt

@@ -4,7 +4,7 @@ os.environ["HF_HUB_DISABLE_XET"] = "1"
 import time
 from huggingface_hub import snapshot_download
 
-COUNTRIES = ["Czech"]         
+COUNTRIES = ["Czech", "India"]         
 
 patterns = ["data/data.yaml"]
 for c in COUNTRIES:

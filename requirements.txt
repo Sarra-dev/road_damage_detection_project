@@ -1,0 +1,4 @@
+ultralytics
+huggingface_hub
+pandas
+dvc==3.67.1
