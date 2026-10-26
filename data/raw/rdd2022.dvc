@@ -1,0 +1,6 @@
+outs:
+- md5: c57366f96b35f0a8d2741a94d3819371.dir
+  size: 725083920
+  nfiles: 21073
+  hash: md5
+  path: rdd2022
