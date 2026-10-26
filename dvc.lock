@@ -1,0 +1,19 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python src/validate_data.py
+    deps:
+    - path: data/raw/rdd2022
+      hash: md5
+      md5: c57366f96b35f0a8d2741a94d3819371.dir
+      size: 725083920
+      nfiles: 21073
+    - path: src/validate_data.py
+      hash: md5
+      md5: 550a8780aad7c6e3b32ebabf3c55edf8
+      size: 1760
+    outs:
+    - path: data/processed/boxes.csv
+      hash: md5
+      md5: 5b3624862cff75244e3d467e11411c3c
+      size: 544076
