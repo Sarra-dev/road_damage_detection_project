@@ -1,4 +1,6 @@
-ultralytics
 huggingface_hub
 pandas
 dvc==3.67.1
+mlflow==3.17.2
+ultralytics==8.4.189
+pyyaml

@@ -5,9 +5,9 @@ stages:
     deps:
     - path: data/raw/rdd2022
       hash: md5
-      md5: c57366f96b35f0a8d2741a94d3819371.dir
-      size: 725083920
-      nfiles: 21073
+      md5: 9e6bafd3a8fadc135fabe7c3128e9bf1.dir
+      size: 724962954
+      nfiles: 21071
     - path: src/validate_data.py
       hash: md5
       md5: 550a8780aad7c6e3b32ebabf3c55edf8
@@ -17,3 +17,34 @@ stages:
       hash: md5
       md5: 5b3624862cff75244e3d467e11411c3c
       size: 544076
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/raw/rdd2022
+      hash: md5
+      md5: 9e6bafd3a8fadc135fabe7c3128e9bf1.dir
+      size: 724962954
+      nfiles: 21071
+    - path: src/train.py
+      hash: md5
+      md5: 31cce5a9c881c8960f2322f5645e6018
+      size: 4008
+    params:
+      params.yaml:
+        train:
+          model: yolov8n.pt
+          epochs: 1
+          imgsz: 320
+          batch: 8
+          fraction: 0.05
+          device: cpu
+          seed: 42
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: c7b0afd1a7f2dedb327de64c1f48183f
+      size: 870
+    - path: models/best.pt
+      hash: md5
+      md5: f60355bbf7ffa2b55d70c00396c0cd67
+      size: 6462634

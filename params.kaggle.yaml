@@ -1,0 +1,12 @@
+data:
+  countries: [Czech, India]
+
+train:
+  model: yolov8s.pt
+  epochs: 50
+  imgsz: 640
+  batch: 16
+  fraction: 1.0
+  device: 0
+  workers: 4
+  seed: 42

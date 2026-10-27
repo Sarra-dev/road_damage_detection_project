@@ -1,0 +1,20 @@
+stages:
+  validate:
+    cmd: python src/validate_data.py
+    deps:
+    - src/validate_data.py
+    - data/raw/rdd2022
+    outs:
+    - data/processed/boxes.csv
+  train:
+    cmd: python src/train.py
+    deps:
+    - data/raw/rdd2022
+    - src/train.py
+    params:
+    - train
+    outs:
+    - models/best.pt
+    metrics:
+    - metrics.json:
+        cache: false

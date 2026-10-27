@@ -1,6 +1,10 @@
 .venv/
 runs/
 mlruns/
-*.pt
+/*.pt
+mlflow.db
+mlartifacts/
 __pycache__/
 .env
+mlruns/
+runs/
