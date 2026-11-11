@@ -10,23 +10,45 @@ import pandas as pd
 import yaml
 from ultralytics import YOLO, settings
 
+from data_utils import build_train_list
+
 settings.update({"mlflow": False})  # we do the MLflow logging ourselves
 
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = ["longitudinal_crack", "transverse_crack", "alligator_crack", "pothole"]
+DATA = ROOT / "data" / "raw" / "rdd2022" / "data"
 
-# Optional argument: python src/train.py params.kaggle.yaml
+# Optional argument: python src/train.py params.exp1.yaml
 params_file = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "params.yaml"
 params = yaml.safe_load(params_file.read_text())
 tp = params["train"]
 countries = params["data"]["countries"]
 workers = tp.get("workers", 0)
 
+# Optional experiment settings (all absent in the baseline):
+#   extra:      any other Ultralytics training argument, e.g. {patience: 30, cos_lr: true}
+#   oversample: {transverse_crack: 3} repeats the train images that contain that class
+extra = dict(tp.get("extra") or {})
+oversample = dict(tp.get("oversample") or {})
+RESERVED = {"data", "epochs", "imgsz", "batch", "fraction", "device", "seed", "workers",
+            "project", "name", "exist_ok"}
+clash = RESERVED & set(extra)
+if clash:
+    sys.exit(f"'extra' must not contain {sorted(clash)}: set them directly in the train section")
+
 (ROOT / "runs").mkdir(exist_ok=True)
+train_split = "images/train"
+sampling_info = {}
+if oversample:
+    list_file = ROOT / "runs" / "train_list.txt"
+    sampling_info = build_train_list(DATA, NAMES, oversample, list_file)
+    train_split = list_file.as_posix()
+    print("Oversampling:", oversample, "->", sampling_info)
+
 data_yaml = ROOT / "runs" / "dataset.yaml"
 data_yaml.write_text(yaml.safe_dump({
-    "path": (ROOT / "data" / "raw" / "rdd2022" / "data").as_posix(),
-    "train": "images/train",
+    "path": DATA.as_posix(),
+    "train": train_split,
     "val": "images/valid",
     "test": "images/test",
     "names": dict(enumerate(NAMES)),
@@ -41,10 +63,12 @@ def clean(name: str) -> str:
     return re.sub(r"[^\w\-\. /]", "", name.replace("(B)", "").strip())
 
 
-run_name = f"{Path(tp['model']).stem}_{'-'.join(countries)}"
+run_name = params.get("run_name") or f"{Path(tp['model']).stem}_{'-'.join(countries)}"
 with mlflow.start_run(run_name=run_name):
     mlflow.log_params({f"train.{k}": v for k, v in tp.items()})
     mlflow.log_param("data.countries", ",".join(countries))
+    if sampling_info:
+        mlflow.log_params({f"sampling.{k}": v for k, v in sampling_info.items()})
 
     model = YOLO(tp["model"])
     results = model.train(
@@ -59,9 +83,14 @@ with mlflow.start_run(run_name=run_name):
         project=str(ROOT / "runs" / "train"),
         name="exp",
         exist_ok=True,
+        **extra,
     )
     save_dir = Path(model.trainer.save_dir)
     best = save_dir / "weights" / "best.pt"
+
+    # Copy the model first (DVC output): a tracking-server problem later must not lose it
+    (ROOT / "models").mkdir(exist_ok=True)
+    shutil.copy(best, ROOT / "models" / "best.pt")
 
     # Per-epoch curves -> MLflow
     res = pd.read_csv(save_dir / "results.csv")
@@ -101,14 +130,13 @@ with mlflow.start_run(run_name=run_name):
         for k, v in m.items():
             mlflow.log_metric(f"{cls_name}/{k}", v)
 
-    # Artifacts: weights, curves, plots
-    mlflow.log_artifact(str(best))
-    mlflow.log_artifact(str(ROOT / "metrics.json"))
-    for f in list(save_dir.glob("*.png")) + list(save_dir.glob("*.csv")):
-        mlflow.log_artifact(str(f), artifact_path="train_run")
-
-    # Copy the model to the tracked location (DVC output)
-    (ROOT / "models").mkdir(exist_ok=True)
-    shutil.copy(best, ROOT / "models" / "best.pt")
+    # Artifacts: weights, curves, plots (an upload failure is reported but not fatal)
+    try:
+        mlflow.log_artifact(str(best))
+        mlflow.log_artifact(str(ROOT / "metrics.json"))
+        for f in list(save_dir.glob("*.png")) + list(save_dir.glob("*.csv")):
+            mlflow.log_artifact(str(f), artifact_path="train_run")
+    except Exception as e:  # noqa: BLE001
+        print("Warning: could not log artifacts to MLflow:", e)
 
 print("Done. Metrics:", json.dumps(summary, indent=2))

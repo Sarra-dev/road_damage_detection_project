@@ -1,0 +1,17 @@
+run_name: exp2_yolov8m
+data:
+  countries: [Czech, India]
+train:
+  model: yolov8m.pt
+  epochs: 50
+  imgsz: 640
+  batch: 16
+  fraction: 1.0
+  device: 0
+  workers: 4
+  seed: 42
+evaluate:
+  splits: [valid, test]
+  device: 0
+  batch: 16
+  workers: 4

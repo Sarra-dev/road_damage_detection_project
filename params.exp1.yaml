@@ -1,0 +1,19 @@
+run_name: exp1_oversample_transverse
+data:
+  countries: [Czech, India]
+train:
+  model: yolov8s.pt
+  epochs: 50
+  imgsz: 640
+  batch: 16
+  fraction: 1.0
+  device: 0
+  workers: 4
+  seed: 42
+  oversample:
+    transverse_crack: 3
+evaluate:
+  splits: [valid, test]
+  device: 0
+  batch: 16
+  workers: 4
