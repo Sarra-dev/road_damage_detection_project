@@ -18,3 +18,17 @@ stages:
     metrics:
     - metrics.json:
         cache: false
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - data/raw/rdd2022
+    - models/best.pt
+    - src/evaluate.py
+    params:
+    - evaluate
+    outs:
+    - eval_table.csv:
+        cache: false
+    metrics:
+    - eval_metrics.json:
+        cache: false

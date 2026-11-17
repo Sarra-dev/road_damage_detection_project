@@ -2,10 +2,17 @@ data:
   countries: [Czech, India]
 
 train:
-  model: yolov8n.pt
-  epochs: 1
-  imgsz: 320
-  batch: 8
-  fraction: 0.05
-  device: cpu
+  model: yolov8s.pt
+  epochs: 50
+  imgsz: 640
+  batch: 16
+  fraction: 1.0
+  device: 0
+  workers: 4
   seed: 42
+
+evaluate:
+  splits: [valid, test]
+  device: cpu
+  batch: 8
+  workers: 0

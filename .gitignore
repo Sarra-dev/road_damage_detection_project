@@ -8,3 +8,5 @@ __pycache__/
 .env
 mlruns/
 runs/
+kaggle_runs/
+mlflow_smoke.db

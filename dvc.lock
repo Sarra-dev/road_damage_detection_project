@@ -27,24 +27,59 @@ stages:
       nfiles: 21071
     - path: src/train.py
       hash: md5
-      md5: 31cce5a9c881c8960f2322f5645e6018
-      size: 4008
+      md5: d6d806c871fdb25885e4c67947833144
+      size: 5176
     params:
       params.yaml:
         train:
-          model: yolov8n.pt
-          epochs: 1
-          imgsz: 320
-          batch: 8
-          fraction: 0.05
-          device: cpu
+          model: yolov8s.pt
+          epochs: 50
+          imgsz: 640
+          batch: 16
+          fraction: 1.0
+          device: 0
+          workers: 4
           seed: 42
     outs:
     - path: metrics.json
       hash: md5
-      md5: c7b0afd1a7f2dedb327de64c1f48183f
-      size: 870
+      md5: 4018174591a6eab50e4022bae3e69ba6
+      size: 1008
     - path: models/best.pt
       hash: md5
-      md5: f60355bbf7ffa2b55d70c00396c0cd67
-      size: 6462634
+      md5: b8f3530d38ae0bda42efb94b0100645a
+      size: 22522090
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/raw/rdd2022
+      hash: md5
+      md5: 9e6bafd3a8fadc135fabe7c3128e9bf1.dir
+      size: 724962954
+      nfiles: 21071
+    - path: models/best.pt
+      hash: md5
+      md5: b8f3530d38ae0bda42efb94b0100645a
+      size: 22522090
+    - path: src/evaluate.py
+      hash: md5
+      md5: 9616343000b39c173fd83a931a096139
+      size: 4662
+    params:
+      params.yaml:
+        evaluate:
+          splits:
+          - valid
+          - test
+          device: cpu
+          batch: 8
+          workers: 0
+    outs:
+    - path: eval_metrics.json
+      hash: md5
+      md5: afbb07c968d5558e8012bd7e966329fe
+      size: 6807
+    - path: eval_table.csv
+      hash: md5
+      md5: bd27fbce559653c2bfd03a4b22d95b83
+      size: 3531
