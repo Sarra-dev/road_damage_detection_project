@@ -44,8 +44,8 @@
 
 | Métrique | Baseline Initiale | Objectif Final Visé |
 | :--- | :---: | :---: |
-| **mAP50** | `0.364` *(test split)* | `[TO FILL: team target, e.g. > 0.40]` |
-| **mAP50-95** | `0.161` *(test split)* | `[TO FILL: team target, e.g. > 0.18]` |
+| **mAP50** | `0.364` *(test split)* | ` > 0.40` |
+| **mAP50-95** | `0.161` *(test split)* | ` > 0.18` |
 
 *Values above are on the test split. Validation-split values: `[TO FILL: from eval_table.csv]`. Baseline mAP50 per class (test): longitudinal 0.33 · transverse 0.16 · alligator 0.59 · pothole 0.37. Experiment 3 (test): mAP50 0.335 · mAP50-95 0.147 → baseline kept, using a decision rule fixed in advance (keep a new run only if mAP50-95 rises, transverse mAP50 rises, and no class loses more than 0.03 mAP50).*
 
