@@ -46,7 +46,6 @@
 | :--- | :---: | :---: |
 | **mAP50** | `0.364` *(test split)* | `[TO FILL: team target, e.g. > 0.40]` |
 | **mAP50-95** | `0.161` *(test split)* | `[TO FILL: team target, e.g. > 0.18]` |
-| **Temps d'inférence (CPU)** | `[TO FILL: not measured yet]` | `[TO FILL]` |
 
 *Values above are on the test split. Validation-split values: `[TO FILL: from eval_table.csv]`. Baseline mAP50 per class (test): longitudinal 0.33 · transverse 0.16 · alligator 0.59 · pothole 0.37. Experiment 3 (test): mAP50 0.335 · mAP50-95 0.147 → baseline kept, using a decision rule fixed in advance (keep a new run only if mAP50-95 rises, transverse mAP50 rises, and no class loses more than 0.03 mAP50).*
 
@@ -144,13 +143,10 @@
 ---
 
 ## 📷 Annexes : Captures d'Écran et Preuves d'Exécution
-*(Insérez ci-dessous 2 ou 3 captures réelles de votre travail actuel)*
+*TO BE ADDED*
 
 1. **Capture d'écran du Tracking MLflow :**
-   `[TO FILL: screenshot of the MLflow run list and the train/val loss curves of the baseline run]`
    
 2. **Capture d'écran de l'inférence visuelle (Baseline) :**
-   `[TO FILL: one test image showing the original, the ground-truth boxes and the baseline prediction, e.g. from Ultralytics' val_batch*_labels.jpg / val_batch*_pred.jpg]`
 
 3. **Capture d'écran de l'API / Swagger (`/docs`) ou de l'Interface UI :**
-   Not available at mid-term: the FastAPI backend and the UI have not been started yet (planned for week +1).
